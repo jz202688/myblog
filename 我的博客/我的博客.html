@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="site-title">砚舟博客</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "PingFang SC", "Microsoft YaHei", "Arial", sans-serif;
+      background: #f9f9f9;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .top-nav {
+      background: #fff;
+      padding: 15px 20px;
+      text-align: right;
+      border-bottom: 1px solid #eee;
+      position: sticky;
+      top: 0;
+      z-index: 99;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .lang-select {
+      padding: 6px 10px;
+      border: 1px solid #4CAF50;
+      border-radius: 4px;
+      background: #fff;
+      color: #4CAF50;
+      font-size: 14px;
+      cursor: pointer;
+      outline: none;
+    }
+    .lang-select:hover, .lang-select:focus {
+      background: #4CAF50;
+      color: #fff;
+    }
+
+    .top-nav a {
+      display: inline-block;
+      padding: 8px 15px;
+      color: #333;
+      text-decoration: none;
+      font-size: 15px;
+      margin-left: 5px;
+      border-bottom: 2px solid transparent;
+      transition: all 0.25s ease;
+    }
+    .top-nav a:hover, .top-nav a.active {
+      color: #4CAF50;
+      border-bottom: 2px solid #4CAF50;
+    }
+
+    header {
+      background: #fff;
+      padding: 40px 20px;
+      text-align: center;
+      border-bottom: 1px solid #eee;
+    }
+    .avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 15px;
+      border: 3px solid #4CAF50;
+    }
+    .name { font-size: 24px; margin-bottom: 8px; }
+    .intro { color: #666; font-size: 15px; }
+
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+    section { margin-bottom: 40px; }
+    h2 {
+      font-size: 20px;
+      margin-bottom: 18px;
+      color: #222;
+      border-left: 4px solid #4CAF50;
+      padding-left: 10px;
+    }
+    .text-block {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 25px;
+      text-align: justify;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .big-photo {
+      width: 100%;
+      max-height: 320px;
+      object-fit: cover;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      cursor: pointer;
+      margin-bottom: 18px;
+      transition: transform 0.3s ease;
+    }
+    .big-photo:hover { transform: scale(1.01); }
+
+    .pic-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+    .pic-card {
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+    .pic-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    }
+    .pic-card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+    .pic-desc {
+      font-size: 14px;
+      color: #444;
+      line-height: 1.5;
+      padding: 0 5px 8px;
+      flex-grow: 1;
+      text-align: center;
+    }
+
+    .map-search-box {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      margin-bottom: 40px;
+    }
+    .map-embed {
+      width: 100%;
+      height: 300px;
+      border: 0;
+      border-radius: 6px;
+      margin-bottom: 20px;
+    }
+    .search-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+    .search-btn {
+      padding: 10px 20px;
+      background: #4CAF50;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+    .search-btn:hover { background: #45a049; }
+
+    .img-modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.9);
+      padding: 20px;
+      overflow: auto;
+    }
+    .img-modal img {
+      max-width: 100%;
+      max-height: 85vh;
+      margin: auto;
+      display: block;
+      border-radius: 6px;
+    }
+    .img-modal.show { display: block; }
+    .close-btn {
+      position: absolute;
+      top: 20px; right: 30px;
+      color: #fff;
+      font-size: 35px;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: Arial, sans-serif;
+    }
+    .close-btn:hover { color: #ccc; }
+
+    .links a {
+      display: block;
+      color: #2196F3;
+      text-decoration: none;
+      padding: 12px 15px;
+      margin-bottom: 8px;
+      background: #fff;
+      border-radius: 6px;
+      transition: background 0.2s;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+    }
+    .links a:hover { background: #eaf4fe; }
+
+    footer {
+      background-color: #208040;
+      color: #ffffff;
+      padding: 40px 20px 20px;
+      margin-top: 50px;
+    }
+    .footer-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 30px;
+      margin-bottom: 20px;
+    }
+    .footer-col h3 {
+      font-size: 17px;
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+    .footer-menu a {
+      display: block;
+      color: #fff;
+      text-decoration: none;
+      padding: 6px 0;
+      opacity: 0.9;
+      transition: 0.2s;
+    }
+    .footer-menu a:hover { opacity: 1; text-decoration: underline; }
+
+    .contact-text p { margin: 6px 0; font-size: 15px; }
+    .social-icons { margin-top: 12px; }
+    .social-icons a {
+      color: #fff;
+      font-size: 22px;
+      margin-right: 12px;
+      text-decoration: none;
+    }
+    .social-icons a:hover { opacity: 0.8; }
+
+    .subscribe-form input[type="email"] {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      font-size: 15px;
+      color: #333;
+    }
+    .subscribe-form button {
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      padding: 9px 25px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 15px;
+      transition: background 0.2s;
+    }
+    .subscribe-form button:hover { background-color: #45a049; }
+
+    .copyright {
+      text-align: center;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.2);
+      font-size: 13px;
+      opacity: 0.85;
+    }
+
+    @media (max-width: 600px) {
+      .top-nav { text-align: center; justify-content: center; }
+      .top-nav a { margin: 3px; padding: 6px 10px; font-size: 14px; }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <nav class="top-nav">
+    <a href="#" class="active" data-i18n="nav-home">首页</a>
+    <a href="#" data-i18n="nav-about">关于我们</a>
+    <a href="#footer-contact" data-i18n="nav-contact">联系我们</a>
+    <a href="#" data-i18n="nav-terms">条款与细则</a>
+    <!-- 保留语言切换下拉框（含印地语） -->
+    <select class="lang-select" id="langSelector">
+      <option value="zh">中文</option>
+      <option value="en">English</option>
+      <option value="hi">हिन्दी (印地语)</option>
+      <option value="es">Español</option>
+      <option value="ja">日本語</option>
+      <option value="fr">Français</option>
+      <option value="de">Deutsch</option>
+      <option value="ru">Русский</option>
+      <option value="ar">العربية</option>
+      <option value="pt">Português</option>
+    </select>
+  </nav>
+
+  <header>
+    <img src="avatar.jpg" alt="我的头像" class="avatar">
+    <h1 class="name" data-i18n="user-name">砚舟</h1>
+    <p class="intro" data-i18n="site-intro">美好的时光/美丽的风景</p>
+  </header>
+
+  <main class="container">
+    <section>
+      <h2 data-i18n="section-iguazu">伊瓜苏大瀑布</h2>
+      <div class="text-block">
+        <p data-i18n="iguazu-p1">伊瓜苏大瀑布（Iguazu Falls）是世界上最宽的瀑布群，横跨阿根廷与巴西，世界著名自然奇观。</p>
+      </div>
+      <img src="big-falls.jpg" alt="伊瓜苏全景大图" class="big-photo" onclick="openImg(this.src)">
+      <div class="text-block">
+        <p data-i18n="iguazu-detail">伊瓜苏瀑布宽近2.7公里，由275个瀑布组成，标志性“魔鬼之咽”气势磅礴，被列入世界自然遗产、世界新七大自然奇观之一。</p>
+      </div>
+      <div class="pic-grid">
+        <div class="pic-card">
+          <img src="img1.jpg" alt="伊瓜苏风景" onclick="openImg(this.src)">
+          <p class="pic-desc" data-i18n="pic1-desc">彩虹与狂流：晴天常见彩虹横跨水雾与雨林</p>
+        </div>
+        <div class="pic-card">
+          <img src="img2.jpg" alt="伊瓜苏风景" onclick="openImg(this.src)">
+          <p class="pic-desc" data-i18n="pic2-desc">鸟瞰视角：雨林中大河断裂汇入深谷的壮观地貌</p>
+        </div>
+        <div class="pic-card">
+          <img src="img3.jpg" alt="伊瓜苏风景" onclick="openImg(this.src)">
+          <p class="pic-desc" data-i18n="pic3-desc">魔鬼之咽：半圆形峡谷水流密集倾泻，水汽翻腾</p>
+        </div>
+        <div class="pic-card">
+          <img src="img4.jpg" alt="伊瓜苏风景" onclick="openImg(this.src)">
+          <p class="pic-desc" data-i18n="pic4-desc">阳光穿透水雾，绚丽彩虹横跨瀑布</p>
+        </div>
+        <div class="pic-card">
+          <img src="img5.jpg" alt="伊瓜苏风景" onclick="openImg(this.src)">
+          <p class="pic-desc" data-i18n="pic5-desc">阿根廷栈道：近距离感受飞溅水花</p>
+        </div>
+        <div class="pic-card">
+          <img src="img6.jpg" alt="伊瓜苏风景" onclick="openImg(this.src)">
+          <p class="pic-desc" data-i18n="pic6-desc">巴西全景：一眼尽览整片瀑布群</p>
+        </div>
+        <div class="pic-card">
+          <img src="img7.jpg" alt="伊瓜苏风景" onclick="openImg(this.src)">
+          <p class="pic-desc" data-i18n="pic7-desc">雨林碧水蓝天，生机与水景相融</p>
+        </div>
+        <div class="pic-card">
+          <img src="img8.jpg" alt="伊瓜苏风景" onclick="openImg(this.src)">
+          <p class="pic-desc" data-i18n="pic8-desc">暮色时分，瀑布静谧温柔</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="map-search-box">
+      <h2 data-i18n="section-location">位置与便捷搜索</h2>
+      <iframe 
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3455.876325334567!2d-56.18585638457243!3d-34.90394897193238!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x959f80b8b1b8b1b1%3A0x123456789abcdef!2sMontevideo%2C%20Uruguay!5e0!3m2!1szh-CN!2scn!4v1620000000000!5m2!1szh-CN!2scn" 
+        class="map-embed" 
+        allowfullscreen="" 
+        loading="lazy">
+      </iframe>
+      <div class="search-buttons">
+        <a href="https://www.google.com/search?q=伊瓜苏大瀑布+详细介绍" target="_blank" class="search-btn" data-i18n="btn-iguazu">🔍 伊瓜苏详情</a>
+        <a href="https://www.google.com/search?q=阿根廷+著名自然景点" target="_blank" class="search-btn" data-i18n="btn-arg">🌎 阿根廷景点</a>
+        <a href="https://www.google.com/search?q=南美旅行攻略+巴西阿根廷" target="_blank" class="search-btn" data-i18n="btn-travel">✈️ 南美旅行攻略</a>
+        <a href="https://www.google.com/search?q=世界自然遗产+壮丽瀑布" target="_blank" class="search-btn" data-i18n="btn-waterfall">💧 世界瀑布景观</a>
+        <a href="https://www.google.com/maps/search/伊瓜苏大瀑布" target="_blank" class="search-btn" data-i18n="btn-map">🗺️ 地图搜索伊瓜苏</a>
+      </div>
+    </div>
+
+    <section id="footer-contact">
+      <h2 data-i18n="section-recommend">推荐与链接</h2>
+      <div class="links">
+        <a href="https://zhihu.com" target="_blank" data-i18n="link-articles">📝 我的文章合集</a>
+        <a href="https://developer.mozilla.org/zh-CN/" target="_blank" data-i18n="link-learn">💻 学习资源分享</a>
+        <a href="https://www.toolnb.com" target="_blank" data-i18n="link-tools">📌 常用工具网站</a>
+        <a href="mailto:gao52068@gmail.com" data-i18n="link-email">✉️ 联系我（邮箱）: gao52068@gmail.com</a>
+      </div>
+    </section>
+  </main>
+
+  <div id="imgModal" class="img-modal" onclick="closeImg()">
+    <span class="close-btn">&times;</span>
+    <img id="modalImg" src="" alt="大图查看">
+  </div>
+
+  <footer>
+    <div class="footer-container">
+      <div class="footer-col">
+        <div class="footer-menu">
+          <a href="#" data-i18n="nav-home">首页</a>
+          <a href="#" data-i18n="nav-about">关于我们</a>
+          <a href="#footer-contact" data-i18n="nav-contact">联系我们</a>
+          <a href="#" data-i18n="nav-terms">条款与细则</a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h3 data-i18n="footer-contact-title">联系方式</h3>
+        <div class="contact-text">
+          <p>gao52068@gmail.com</p>
+          <p>whatsapp:(+54) 1157457773</p>
+        </div>
+        <h3 style="margin-top:20px;" data-i18n="footer-social">社交活动</h3>
+        <div class="social-icons">
+          <a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://www.instagram.com/zheng20262026?utm_source=qr&igsh=MTBjZDUwanhmcGZxag==" target="_blank"><i class="fab fa-instagram"></i></a>
+          <a href="https://www.tiktok.com/@zrj2026?_r=1&_t=ZS-985GeLtcDHZ" target="_blank"><i class="fab fa-tiktok"></i></a>
+          <a href="https://x.com/juanzheng12" target="_blank"><i class="fab fa-x"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h3 data-i18n="footer-subscribe">订阅我们的电子报</h3>
+        <form class="subscribe-form" onsubmit="alert('订阅成功！')">
+          <input type="email" placeholder="电子邮件 *" required>
+          <button type="submit" data-i18n="btn-subscribe">订阅</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="copyright">
+      © 2026 gao520. All rights reserved.
+    </div>
+  </footer>
+
+  <script>
+    function openImg(src) {
+      document.getElementById('modalImg').src = src;
+      document.getElementById('imgModal').classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeImg() {
+      document.getElementById('imgModal').classList.remove('show');
+      document.body.style.overflow = 'auto';
+    }
+
+    // 多语言词库（含完整印地语）
+    const i18n = {
+      zh: {
+        "site-title": "砚舟博客",
+        "nav-home": "首页",
+        "nav-about": "关于我们",
+        "nav-contact": "联系我们",
+        "nav-terms": "条款与细则",
+        "user-name": "砚舟",
+        "site-intro": "美好的时光 / 美丽的风景",
+        "section-iguazu": "伊瓜苏大瀑布",
+        "iguazu-p1": "伊瓜苏大瀑布（Iguazu Falls）是世界上最宽的瀑布群，横跨阿根廷与巴西，世界著名自然奇观。",
+        "iguazu-detail": "伊瓜苏瀑布宽近2.7公里，由275个瀑布组成，标志性“魔鬼之咽”气势磅礴，被列入世界自然遗产、世界新七大自然奇观之一。",
+        "pic1-desc": "彩虹与狂流：晴天常见彩虹横跨水雾与雨林",
+        "pic2-desc": "鸟瞰视角：雨林中大河断裂汇入深谷的壮观地貌",
+        "pic3-desc": "魔鬼之咽：半圆形峡谷水流密集倾泻，水汽翻腾",
+        "pic4-desc": "阳光穿透水雾，绚丽彩虹横跨瀑布",
+        "pic5-desc": "阿根廷栈道：近距离感受飞溅水花",
+        "pic6-desc": "巴西全景：一眼尽览整片瀑布群",
+        "pic7-desc": "雨林碧水蓝天，生机与水景相融",
+        "pic8-desc": "暮色时分，瀑布静谧温柔",
+        "section-location": "位置与便捷搜索",
+        "btn-iguazu": "🔍 伊瓜苏详情",
+        "btn-arg": "🌎 阿根廷景点",
+        "btn-travel": "✈️ 南美旅行攻略",
+        "btn-waterfall": "💧 世界瀑布景观",
+        "btn-map": "🗺️ 地图搜索伊瓜苏",
+        "section-recommend": "推荐与链接",
+        "link-articles": "📝 我的文章合集",
+        "link-learn": "💻 学习资源分享",
+        "link-tools": "📌 常用工具网站",
+        "link-email": "✉️ 联系我（邮箱）: gao52068@gmail.com",
+        "footer-contact-title": "联系方式",
+        "footer-social": "社交活动",
+        "footer-subscribe": "订阅我们的电子报",
+        "btn-subscribe": "订阅"
+      },
+      en: {
+        "site-title": "Yanzhou's Blog",
+        "nav-home": "Home",
+        "nav-about": "About Us",
+        "nav-contact": "Contact Us",
+        "nav-terms": "Terms & Conditions",
+        "user-name": "Yanzhou",
+        "site-intro": "Beautiful moments / Beautiful scenery",
+        "section-iguazu": "Iguazu Falls",
+        "iguazu-p1": "Iguazu Falls — the world's widest waterfall system, spanning Argentina and Brazil, a world-famous natural wonder.",
+        "iguazu-detail": "Nearly 2.7km wide with 275 cascades; the iconic Devil's Throat is magnificent; listed as World Heritage and one of the New 7 Wonders of Nature.",
+        "pic1-desc": "Rainbow & torrent: rainbows often arch over mist & rainforest on sunny days",
+        "pic2-desc": "Aerial view: dramatic landscape where the river plunges into deep valleys",
+        "pic3-desc": "Devil's Throat: dense cascades in a horseshoe canyon with roaring mist",
+        "pic4-desc": "Sunlight through mist, vivid rainbow across the falls",
+        "pic5-desc": "Argentina walkways: feel splashing water up close",
+        "pic6-desc": "Brazil side: panoramic view of the whole falls",
+        "pic7-desc": "Rainforest, clear water & blue sky blending nature & water",
+        "pic8-desc": "Dusk: gentle, peaceful beauty in sunset glow",
+        "section-location": "Location & Quick Search",
+        "btn-iguazu": "🔍 Iguazu Details",
+        "btn-arg": "🌎 Argentina Attractions",
+        "btn-travel": "✈️ South America Travel Guide",
+        "btn-waterfall": "💧 World Waterfall Landscapes",
+        "btn-map": "🗺️ Map Search Iguazu",
+        "section-recommend": "Recommendations & Links",
+        "link-articles": "📝 My Articles",
+        "link-learn": "💻 Learning Resources",
+        "link-tools": "📌 Useful Websites",
+        "link-email": "✉️ Contact Me: gao52068@gmail.com",
+        "footer-contact-title": "Contact Info",
+        "footer-social": "Social Media",
+        "footer-subscribe": "Subscribe to Newsletter",
+        "btn-subscribe": "Subscribe"
+      },
+      hi: {
+        "site-title": "यानझोउ का ब्लॉग",
+        "nav-home": "मुख्य पृष्ठ",
+        "nav-about": "हमारे बारे में",
+        "nav-contact": "संपर्क करें",
+        "nav-terms": "नियम और शर्तें",
+        "user-name": "यानझोउ",
+        "site-intro": "सुंदर पल / सुंदर दृश्य",
+        "section-iguazu": "इगुआजू जलप्रपात",
+        "iguazu-p1": "इगुआजू जलप्रपात दुनिया का सबसे चौड़ा जलप्रपात समूह है, जो अर्जेंटीना और ब्राजील के बीच फैला हुआ है, विश्व प्रसिद्ध प्राकृतिक चमत्कार है।",
+        "iguazu-detail": "लगभग 2.7 किलोमीटर चौड़ा, 275 झरने; प्रसिद्ध «शैतान का गला» भव्य और प्रभावशाली; विश्व प्राकृतिक धरोहर और प्रकृति के सात नए आश्चर्यों में से एक।",
+        "pic1-desc": "इंद्रधनुष और तेज धारा: धूप वाले दिनों में कोहरे और वर्षावन के ऊपर इंद्रधनुष दिखता है",
+        "pic2-desc": "ऊपर से दृश्य: नदी गहरी घाटियों में गिरती हुई अद्भुत भूदृश्य",
+        "pic3-desc": "शैतान का गला: अर्धवृत्ताकार घाटी में घने जलप्रपात, चारों ओर पानी का कोहरा",
+        "pic4-desc": "धूप किरणें कोहरे से गुजरती हैं, जलप्रपात पर चमकदार इंद्रधनुष",
+        "pic5-desc": "अर्जेंटीना का रास्ता: पास से पानी के छींटे महसूस करें",
+        "pic6-desc": "ब्राजील का दृश्य: पूरे जलप्रपात समूह का एक ही नजारा",
+        "pic7-desc": "हरा वर्षावन, नीला पानी और आकाश, प्रकृति का सुंदर मेल",
+        "pic8-desc": "शाम का समय: शांत, सुंदर और शांतिपूर्ण दृश्य",
+        "section-location": "स्थान और तेज़ खोज",
+        "btn-iguazu": "🔍 विवरण देखें",
+        "btn-arg": "🌎 अर्जेंटीना के स्थान",
+        "btn-travel": "✈️ यात्रा मार्गदर्शक",
+        "btn-waterfall": "💧 विश्व के जलप्रपात",
+        "btn-map": "🗺️ मानचित्र पर खोजें",
+        "section-recommend": "सिफारिशें और लिंक",
+        "link-articles": "📝 मेरे लेख",
+        "link-learn": "💻 सीखने के स्रोत",
+        "link-tools": "📌 उपयोगी वेबसाइटें",
+        "link-email": "✉️ ईमेल: gao52068@gmail.com",
+        "footer-contact-title": "संपर्क जानकारी",
+        "footer-social": "सोशल मीडिया",
+        "footer-subscribe": "न्यूज़लेटर सदस्यता",
+        "btn-subscribe": "सदस्य बनें"
+      },
+      es: {
+        "site-title": "Blog de Yanzhou",
+        "nav-home": "Inicio",
+        "nav-about": "Sobre Nosotros",
+        "nav-contact": "Contáctanos",
+        "nav-terms": "Términos y Condiciones",
+        "user-name": "Yanzhou",
+        "site-intro": "Momentos hermosos / Paisajes hermosos",
+        "section-iguazu": "Cataratas del Iguazú",
+        "iguazu-p1": "Las Cataratas del Iguazú son el conjunto de cascadas más ancho del mundo, entre Argentina y Brasil, una maravilla natural mundial.",
+        "iguazu-detail": "Casi 2,7 km de ancho, 275 saltos; la Garganta del Diablo impresionante; Patrimonio de la Humanidad y una de las 7 Maravillas Naturales.",
+        "pic1-desc": "Arcoíris y corriente: arcoíris sobre la niebla y selva en días soleados",
+        "pic2-desc": "Vista aérea: río que cae espectacularmente hacia valles profundos",
+        "pic3-desc": "Garganta del Diablo: caídas densas en cañón en forma de herradura",
+        "pic4-desc": "Luz entre niebla, arcoíris brillante sobre las cataratas",
+        "pic5-desc": "Senderos argentinos: sentir el agua salpicando de cerca",
+        "pic6-desc": "Lado brasileño: vista panorámica de todo el conjunto",
+        "pic7-desc": "Selva, agua clara y cielo azul unen naturaleza y agua",
+        "pic8-desc": "Atardecer: belleza tranquila bajo el sol poniente",
+        "section-location": "Ubicación y Búsqueda",
+        "btn-iguazu": "🔍 Detalles Iguazú",
+        "btn-arg": "🌎 Lugares de Argentina",
+        "btn-travel": "✈️ Guía Sudamérica",
+        "btn-waterfall": "💧 Cascadas del mundo",
+        "btn-map": "🗺️ Mapa Iguazú",
+        "section-recommend": "Recomendaciones y Enlaces",
+        "link-articles": "📝 Mis Artículos",
+        "link-learn": "💻 Recursos de Aprendizaje",
+        "link-tools": "📌 Sitios Útiles",
+        "link-email": "✉️ Escríbeme: gao52068@gmail.com",
+        "footer-contact-title": "Contacto",
+        "footer-social": "Redes Sociales",
+        "footer-subscribe": "Suscríbete al boletín",
+        "btn-subscribe": "Suscribirse"
+      },
+      ja: {
+        "site-title": "硯舟のブログ",
+        "nav-home": "ホーム",
+        "nav-about": "私たちについて",
+        "nav-contact": "お問い合わせ",
+        "nav-terms": "利用規約",
+        "user-name": "硯舟",
+        "site-intro": "美しい時間 / 美しい景色",
+        "section-iguazu": "イグアスの滝",
+        "iguazu-p1": "イグアスの滝はアルゼンチンとブラジルにまたがる世界最大級の滝群、世界的な自然遺産です。",
+        "iguazu-detail": "幅約2.7km、275の滝、「悪魔の喉元」は圧巻、世界遺産・新七大自然奇跡に選ばれる。",
+        "pic1-desc": "虹と激流：晴れた日は霧と熱帯雨林に虹がかかる",
+        "pic2-desc": "空撮：川が断崖から深い谷へ流れ込む雄大な景観",
+        "pic3-desc": "悪魔の喉元：半円の峡谷に滝が密集し水しぶきが舞う",
+        "pic4-desc": "光が霧を抜け、滝に鮮やかな虹がかかる",
+        "pic5-desc": "アルゼンチン側遊歩道：間近に水しぶきを感じる",
+        "pic6-desc": "ブラジル側：滝全体が一望できる全景",
+        "pic7-desc": "熱帯雨林と青い水、自然と水が一体となる",
+        "pic8-desc": "夕暮れ：沈む夕日に包まれ穏やかな美しさ",
+        "section-location": "場所と検索",
+        "btn-iguazu": "🔍 イグアス詳細",
+        "btn-arg": "🌎 アルゼンチン観光",
+        "btn-travel": "✈️ 南米旅行ガイド",
+        "btn-waterfall": "💧 世界の滝",
+        "btn-map": "🗺️ 地図でイグアス",
+        "section-recommend": "おすすめリンク",
+        "link-articles": "📝 記事一覧",
+        "link-learn": "💻 学習リソース",
+        "link-tools": "📌 便利サイト",
+        "link-email": "✉️ 連絡先：gao52068@gmail.com",
+        "footer-contact-title": "連絡先",
+        "footer-social": "SNS",
+        "footer-subscribe": "ニュースレター登録",
+        "btn-subscribe": "登録"
+      },
+      fr: {
+        "site-title": "Blog de Yanzhou",
+        "nav-home": "Accueil",
+        "nav-about": "À propos",
+        "nav-contact": "Contact",
+        "nav-terms": "Conditions générales",
+        "user-name": "Yanzhou",
+        "site-intro": "Beaux moments / Beaux paysages",
+        "section-iguazu": "Chutes d'Iguazú",
+        "iguazu-p1": "Les chutes d'Iguazú, plus grand ensemble de cascades du monde entre Argentine et Brésil, merveille naturelle.",
+        "iguazu-detail": "2,7 km de large, 275 cascades ; la Gorge du Diable spectaculaire ; patrimoine mondial et une des 7 merveilles naturelles.",
+        "pic1-desc": "Arc-en-ciel et torrent : arc-en-ciel sur la brume et la forêt tropicale",
+        "pic2-desc": "Vue aérienne : fleuve qui plonge dans de profondes vallées",
+        "pic3-desc": "Gorge du Diable : cascades puissantes dans un canyon en fer à cheval",
+        "pic4-desc": "Lumière à travers la brume, arc-en-ciel sur les chutes",
+        "pic5-desc": "Sentiers argentins : sentir l'eau de près",
+        "pic6-desc": "Côté brésilien : vue panoramique complète",
+        "pic7-desc": "Forêt, eau claire et ciel bleu : nature et eau unies",
+        "pic8-desc": "Crépuscule : beauté calme au coucher du soleil",
+        "section-location": "Localisation & Recherche",
+        "btn-iguazu": "🔍 Détails Iguazú",
+        "btn-arg": "🌎 Argentine tourisme",
+        "btn-travel": "✈️ Guide Amérique du Sud",
+        "btn-waterfall": "💧 Cascades du monde",
+        "btn-map": "🗺️ Carte Iguazú",
+        "section-recommend": "Recommandations & Liens",
+        "link-articles": "📝 Mes articles",
+        "link-learn": "💻 Ressources d'apprentissage",
+        "link-tools": "📌 Sites utiles",
+        "link-email": "✉️ Écrivez-moi : gao52068@gmail.com",
+        "footer-contact-title": "Contact",
+        "footer-social": "Réseaux sociaux",
+        "footer-subscribe": "S'abonner à la lettre",
+        "btn-subscribe": "S'abonner"
+      },
+      de: {
+        "site-title": "Yanzhous Blog",
+        "nav-home": "Startseite",
+        "nav-about": "Über uns",
+        "nav-contact": "Kontakt",
+        "nav-terms": "Nutzungsbedingungen",
+        "user-name": "Yanzhou",
+        "site-intro": "Schöne Momente / Schöne Landschaften",
+        "section-iguazu": "Iguazú-Wasserfälle",
+        "iguazu-p1": "Die Iguazú-Fälle, weltweit breiteste Wasserfallgruppe zwischen Argentinien und Brasilien, Naturwunder.",
+        "iguazu-detail": "2,7 km breit, 275 Fälle; Teufelsschlund beeindruckend; Welterbe & eines der neuen 7 Naturwunder.",
+        "pic1-desc": "Regenbogen & Strömung: Regenbogen über Nebel & Regenwald",
+        "pic2-desc": "Luftbild: Fluss stürzt in tiefe Täler",
+        "pic3-desc": "Teufelsschlund: dichte Wasserfälle im hufeisenförmigen Canyon",
+        "pic4-desc": "Sonne durch Nebel, bunter Regenbogen über den Fällen",
+        "pic5-desc": "Argentinien-Wege: Spritzendes Wasser nah erleben",
+        "pic6-desc": "Brasilien-Seite: Panoramablick auf alle Fälle",
+        "pic7-desc": "Regenwald, klares Wasser & blauer Himmel vereint",
+        "pic8-desc": "Dämmerung: sanfte Schönheit bei Sonnenuntergang",
+        "section-location": "Ort & Suche",
+        "btn-iguazu": "🔍 Iguazú Details",
+        "btn-arg": "🌎 Argentinien Sehenswürdigkeiten",
+        "btn-travel": "✈️ Südamerika-Reiseführer",
+        "btn-waterfall": "💧 Welt-Wasserfälle",
+        "btn-map": "🗺️ Karte Iguazú",
+        "section-recommend": "Empfehlungen & Links",
+        "link-articles": "📝 Meine Artikel",
+        "link-learn": "💻 Lernressourcen",
+        "link-tools": "📌 Nützliche Seiten",
+        "link-email": "✉️ Kontakt: gao52068@gmail.com",
+        "footer-contact-title": "Kontakt",
+        "footer-social": "Soziale Medien",
+        "footer-subscribe": "Newsletter abonnieren",
+        "btn-subscribe": "Abonnieren"
+      },
+      ru: {
+        "site-title": "Блог Яньчжоу",
+        "nav-home": "Главная",
+        "nav-about": "О нас",
+        "nav-contact": "Контакты",
+        "nav-terms": "Условия использования",
+        "user-name": "Яньчжоу",
+        "site-intro": "Прекрасные моменты / Красивые виды",
+        "section-iguazu": "Водопады Игуасу",
+        "iguazu-p1": "Игуасу — широчайшие водопады мира на границе Аргентины и Бразилии, чудо природы.",
+        "iguazu-detail": "Ширина 2,7 км, 275 потоков; Горло Дьявола впечатляет; объект наследия и одно из новых 7 чудес природы.",
+        "pic1-desc": "Радуга и поток: радуга над туманом и джунглями в солнечный день",
+        "pic2-desc": "С высоты: река обрывается в глубокие долины",
+        "pic3-desc": "Горло Дьявола: плотные каскады в подковообразном каньоне",
+        "pic4-desc": "Сквозь туман — яркая радуга над водопадами",
+        "pic5-desc": "Тропы Аргентины: брызги воды рядом",
+        "pic6-desc": "Бразилия: панорама всего комплекса",
+        "pic7-desc": "Джунгли, чистая вода и небо — природа и вода вместе",
+        "pic8-desc": "Сумерки: тихая красота на закате",
+        "section-location": "Местоположение & Поиск",
+        "btn-iguazu": "🔍 Детали Игуасу",
+        "btn-arg": "🌎 Достопримечательности Аргентины",
+        "btn-travel": "✈️ Путеводитель по Южной Америке",
+        "btn-waterfall": "💧 Водопады мира",
+        "btn-map": "🗺️ Карта Игуасу",
+        "section-recommend": "Рекомендации & Ссылки",
+        "link-articles": "📝 Мои статьи",
+        "link-learn": "💻 Обучающие материалы",
+        "link-tools": "📌 Полезные сайты",
+        "link-email": "✉️ Написать: gao52068@gmail.com",
+        "footer-contact-title": "Связь",
+        "footer-social": "Соцсети",
+        "footer-subscribe": "Подписаться на рассылку",
+        "btn-subscribe": "Подписаться"
+      },
+      ar: {
+        "site-title": "مدونة يانزهو",
+        "nav-home": "الرئيسية",
+        "nav-about": "من نحن",
+        "nav-contact": "اتصل بنا",
+        "nav-terms": "الشروط والأحكام",
+        "user-name": "يانزهو",
+        "site-intro": "لحظات جميلة / مناظر خلابة",
+        "section-iguazu": "شلالات إيغواسو",
+        "iguazu-p1": "شلالات إيغواسو الأوسع عالمياً بين الأرجنتين والبرازيل، معجزة طبيعية.",
+        "iguazu-detail": "عرض 2.7 كم، 275 شلال؛ «حلق الشيطان» مهيب؛ تراث عالمي وأحد عجائب الطبيعة السبع الجديدة.",
+        "pic1-desc": "قوس قزح فوق الضباب والغابة في الأيام المشمسة",
+        "pic2-desc": "من الأعلى: نهر يندفع في وديان عميقة",
+        "pic3-desc": "حلق الشيطان: شلالات كثيفة في وادٍ على شكل حدوة حصان",
+        "pic4-desc": "ضوء الشمس يخترق الضباب ويظهر قوس قزح زاهٍ",
+        "pic5-desc": "مسارات الأرجنتين: تشعر برذاذ الماء عن قرب",
+        "pic6-desc": "الجانب البرازيلي: منظر شامل للشلالات",
+        "pic7-desc": "غابة، ماء صافٍ وسماء صافية تُكمل الجمال الطبيعي",
+        "pic8-desc": "الغروب: جمال هادئ مع ضوء الشمس الأخير",
+        "section-location": "الموقع والبحث",
+        "btn-iguazu": "🔍 تفاصيل إيغواسو",
+        "btn-arg": "🌎 معالم الأرجنتين",
+        "btn-travel": "✈️ دليل أمريكا الجنوبية",
+        "btn-waterfall": "💧 شلالات العالم",
+        "btn-map": "🗺️ خريطة إيغواسو",
+        "section-recommend": "توصيات وروابط",
+        "link-articles": "📝 مقالاتي",
+        "link-learn": "💻 مصادر تعليمية",
+        "link-tools": "📌 مواقع مفيدة",
+        "link-email": "✉️ تواصل: gao52068@gmail.com",
+        "footer-contact-title": "التواصل",
+        "footer-social": "وسائل التواصل",
+        "footer-subscribe": "اشترك بالنشرة",
+        "btn-subscribe": "اشترك"
+      },
+      pt: {
+        "site-title": "Blog do Yanzhou",
+        "nav-home": "Início",
+        "nav-about": "Sobre Nós",
+        "nav-contact": "Contato",
+        "nav-terms": "Termos e Condições",
+        "user-name": "Yanzhou",
+        "site-intro": "Momentos bonitos / Paisagens belas",
+        "section-iguazu": "Cataratas do Iguaçu",
+        "iguazu-p1": "As Cataratas do Iguaçu são o maior conjunto de quedas do mundo, entre Brasil e Argentina, maravilha natural.",
+        "iguazu-detail": "Largura de 2,7 km, 275 quedas; Garganta do Diabo impressionante; Patrimônio Mundial e uma das 7 Maravilhas da Natureza.",
+        "pic1-desc": "Arco-íris e corredeiras: sobre névoa e floresta em dias ensolarados",
+        "pic2-desc": "Vista aérea: rio que despenca em vales profundos",
+        "pic3-desc": "Garganta do Diabo: quedas fortes em cânion em forma de ferradura",
+        "pic4-desc": "Luz atravessa névoa, arco-íris brilhante sobre as quedas",
+        "pic5-desc": "Trilhas argentinas: sentir respingos de água perto",
+        "pic6-desc": "Lado brasileiro: vista panorâmica de todo o conjunto",
+        "pic7-desc": "Floresta, água clara e céu azul unem natureza e água",
+        "pic8-desc": "Anoitecer: beleza calma ao entardecer",
+        "section-location": "Localização e Busca",
+        "btn-iguazu": "🔍 Detalhes Iguaçu",
+        "btn-arg": "🌎 Pontos turísticos da Argentina",
+        "btn-travel": "✈️ Guia América do Sul",
+        "btn-waterfall": "💧 Cachoeiras do mundo",
+        "btn-map": "🗺️ Mapa Iguaçu",
+        "section-re
