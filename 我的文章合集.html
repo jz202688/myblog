@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <!-- 关键：确保手机正常缩放显示 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的个人博客</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #f9f9f9;
+      color: #333;
+      line-height: 1.6;
+    }
+    header {
+      background: #fff;
+      padding: 40px 20px;
+      text-align: center;
+      border-bottom: 1px solid #eee;
+    }
+    /* 头像样式 */
+    .avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 15px;
+      border: 3px solid #4CAF50;
+    }
+    .name { font-size: 24px; margin-bottom: 8px; }
+    .intro { color: #666; font-size: 15px; }
+
+    /* 容器，居中+自动适配宽度 */
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+    section { margin-bottom: 40px; }
+    h2 {
+      font-size: 20px;
+      margin-bottom: 18px;
+      color: #222;
+      border-left: 4px solid #4CAF50;
+      padding-left: 10px;
+    }
+
+    /* 图片区域：自适应网格 */
+    .pic-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+    .pic-grid img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    /* 链接列表 */
+    .links a {
+      display: block;
+      color: #2196F3;
+      text-decoration: none;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      background: #fff;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+    .links a:hover { background: #eaf4fe; }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #999;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 头部：头像+名字+简介 -->
+  <header>
+    <img src="avatar.jpg" alt="我的头像" class="avatar">
+    <h1 class="name">jin rang</h1>
+    <p class="intro">美好的时光/美丽的风景</p>
+  </header>
+“Iguazu Falls — world-famous natural wonder on the Argentina-Brazil border.
+ Spectacular cascades, misty scenery, breathtaking beauty and amazing nature landscape.”
+  <main class="container">
+    <!-- 图片展示区 -->
+    <section>
+      <h2>生活剪影</h2>
+      <div class="pic-grid">
+        <img src="img1.jpg" alt="风景">
+        <img src="img2.jpg" alt="风景">
+        <img src="img3.jpg" alt="风景">
+        <img src="img4.jpg" alt="风景">
+        <img src="img5.jpg" alt="风景">
+        <img src="img6.jpg" alt="风景">
+        <img src="img7.jpg" alt="风景">
+        <img src="img8.jpg" alt="风景">
+      </div>
+    </section>
+
+    <!-- 常用链接 -->
+    <section>
+      <h2>推荐与链接</h2>
+      <div class="links">
+        <a href="#" target="_blank">📝 我的文章合集</a>
+        <a href="#" target="_blank">💻 学习资源分享</a>
+        <a href="#" target="_blank">📌 常用工具网站</a>
+        <a href="#" target="_blank">✉️ 联系我（邮箱）: gao52068@gmail.com</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>© 2026 我的个人博客 · 简单记录生活</footer>
+
+</body>
+</html>
