@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="site-title">砚舟博客</title>
+  <style>
+    * {margin:0; padding:0; box-sizing:border-box; font-family:system-ui, sans-serif;}
+    header {background:#2c3e50; color:#fff; padding:1rem 2rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;}
+    nav a {color:#fff; margin:0 1rem; text-decoration:none;}
+    nav a:hover {color:#3498db;}
+    select {padding:0.3rem; border-radius:4px; border:none;}
+    main {max-width:1200px; margin:2rem auto; padding:0 1rem;}
+    .intro {text-align:center; margin:2rem 0; color:#666; font-size:1.2rem;}
+    .section {margin:3rem 0; line-height:1.8;}
+    h2 {color:#2c3e50; margin-bottom:1.5rem; border-bottom:2px solid #3498db; padding-bottom:0.5rem; text-align:center;}
+    .btn {display:inline-block; padding:0.6rem 1.2rem; background:#3498db; color:#fff; border-radius:6px; text-decoration:none; margin:0.5rem; transition:background 0.3s; border:none; cursor:pointer;}
+    .btn:hover {background:#2980b9;}
+    .links {display:flex; gap:1rem; flex-wrap:wrap; justify-content:center; margin-top:1rem;}
+
+    /* ===== 图片展示样式 ===== */
+    .gallery {display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:1.2rem; margin-top:1.5rem;}
+    .gallery-figure {overflow:hidden; border-radius:8px; box-shadow:0 3px 8px rgba(0,0,0,0.15); background:#fff; cursor:pointer; transition:transform 0.3s;}
+    .gallery-figure:hover {transform:scale(1.02);}
+    .gallery-img {width:100%; height:220px; object-fit:cover; display:block;}
+    .gallery-desc {padding:0.8rem; text-align:center; color:#555; font-size:0.95rem;}
+
+    /* ===== 点击放大弹窗 ===== */
+    .modal {display:none; position:fixed; z-index:999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.85); padding:2rem; overflow-y:auto;}
+    .modal.show {display:block;}
+    .modal-img {max-width:90%; max-height:75vh; margin:0 auto; display:block; border-radius:4px;}
+    .close {position:absolute; top:1.5rem; right:2.5rem; color:#fff; font-size:2.2rem; font-weight:bold; cursor:pointer;}
+    .close:hover {color:#ccc;}
+
+    footer {background:#f5f5f5; padding:2rem; margin-top:3rem; text-align:center; color:#666;}
+    .subscribe {margin-top:1rem;}
+    input {padding:0.5rem; width:250px; margin-right:0.5rem; border:1px solid #ddd; border-radius:4px;}
+    .avatar {width:120px; height:120px; border-radius:50%; object-fit:cover; display:block; margin:1rem auto; border:3px solid #3498db;}
+  </style>
+</head>
+<body>
+
+<!-- 图片放大弹窗 -->
+<div id="imgModal" class="modal" onclick="closeImg()">
+  <span class="close">&times;</span>
+  <img id="modalImg" class="modal-img" src="" alt="大图">
+</div>
+
+<header>
+  <div style="text-align:center; flex:1;">
+    <img src="https://i.imgur.com/zZaB9F3.jpg" alt="头像" class="avatar">
+    <h1 data-i18n="site-title">砚舟博客</h1>
+  </div>
+  <nav style="width:100%; justify-content:center; margin-top:1rem;">
+    <a href="#" data-i18n="nav-home">首页</a>
+    <a href="#" data-i18n="nav-about">关于我们</a>
+    <a href="#" data-i18n="nav-contact">联系我们</a>
+    <select id="langSelector">
+      <option value="zh">中文</option>
+      <option value="en">English</option>
+      <option value="es">Español</option>
+    </select>
+  </nav>
+</header>
+
+<main>
+  <p class="intro" data-i18n="site-intro">美好的时光/美丽的风景</p>
+
+  <section class="section">
+    <h2 data-i18n="section-iguazu">伊瓜苏大瀑布</h2>
+    <p style="text-align:center; max-width:800px; margin:0 auto;" data-i18n="iguazu-p1">伊瓜苏大瀑布是世界上最宽的瀑布群，横跨阿根廷与巴西，世界著名自然奇观。</p>
+    <p style="text-align:center; max-width:800px; margin:0.5rem auto 1.5rem;" data-i18n="iguazu-detail">宽近2.7公里、275道瀑布，魔鬼之咽气势磅礴，列入世界自然遗产与世界新七大自然奇观。</p>
+
+    <!-- 首张大图展示 -->
+    <div style="max-width:800px; margin:0 auto 2rem; border-radius:8px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.2); cursor:pointer;" onclick="openImg('https://i.imgur.com/pBx92Ga.jpg')">
+      <img src="https://i.imgur.com/pBx92Ga.jpg" alt="伊瓜苏大瀑布全景" style="width:100%; display:block;">
+    </div>
+
+    <!-- 图片相册：点击图片放大 -->
+    <div class="gallery">
+      <figure class="gallery-figure" onclick="openImg('https://i.imgur.com/2vFDtwb.jpg')">
+        <img class="gallery-img" src="https://i.imgur.com/2vFDtwb.jpg" alt="伊瓜苏瀑布">
+        <figcaption class="gallery-desc" data-i18n="pic1-desc">彩虹横跨水雾雨林</figcaption>
+      </figure>
+      <figure class="gallery-figure" onclick="openImg('https://i.imgur.com/qbsH5IQ.jpg')">
+        <img class="gallery-img" src="https://i.imgur.com/qbsH5IQ.jpg" alt="伊瓜苏瀑布">
+        <figcaption class="gallery-desc" data-i18n="pic2-desc">鸟瞰大河入深谷</figcaption>
+      </figure>
+      <figure class="gallery-figure" onclick="openImg('https://i.imgur.com/sbsuNFZ.jpg')">
+        <img class="gallery-img" src="https://i.imgur.com/sbsuNFZ.jpg" alt="魔鬼之咽">
+        <figcaption class="gallery-desc" data-i18n="pic3-desc">魔鬼之咽水汽翻腾</figcaption>
+      </figure>
+      <figure class="gallery-figure" onclick="openImg('https://i.imgur.com/nU7hLZK.jpg')">
+        <img class="gallery-img" src="https://i.imgur.com/nU7hLZK.jpg" alt="阳光彩虹">
+        <figcaption class="gallery-desc" data-i18n="pic4-desc">阳光穿透现彩虹</figcaption>
+      </figure>
+      <figure class="gallery-figure" onclick="openImg('https://i.imgur.com/OW8Exd9.jpg')">
+        <img class="gallery-img" src="https://i.imgur.com/OW8Exd9.jpg" alt="壮阔瀑布">
+        <figcaption class="gallery-desc">飞瀑层叠，绿意环绕</figcaption>
+      </figure>
+      <figure class="gallery-figure" onclick="openImg('https://i.imgur.com/fNlNRh5.jpg')">
+        <img class="gallery-img" src="https://i.imgur.com/fNlNRh5.jpg" alt="水雾升腾">
+        <figcaption class="gallery-desc">水汽弥漫，气势磅礴</figcaption>
+      </figure>
+      <figure class="gallery-figure" onclick="openImg('https://i.imgur.com/bqOi91i.jpg')">
+        <img class="gallery-img" src="https://i.imgur.com/bqOi91i.jpg" alt="雨林环抱">
+        <figcaption class="gallery-desc">丛林深处，碧水奔流</figcaption>
+      </figure>
+      <figure class="gallery-figure" onclick="openImg('https://i.imgur.com/OjU6W8A.jpg')">
+        <img class="gallery-img" src="https://i.imgur.com/OjU6W8A.jpg" alt="空中俯瞰">
+        <figcaption class="gallery-desc">高空远眺，星河般蜿蜒</figcaption>
+      </figure>
+    </div>
+
+    <div class="links">
+      <a href="#" class="btn" data-i18n="btn-iguazu">🔍 瀑布详情</a>
+      <a href="#" class="btn" data-i18n="btn-map">🗺 地图搜索</a>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 data-i18n="section-recommend">推荐链接</h2>
+    <div class="links">
+      <a href="#" class="btn" data-i18n="link-articles">📝 文章合集</a>
+      <a href="#" class="btn" data-i18n="link-learn">💻 学习资源</a>
+      <a href="#" class="btn" data-i18n="link-email">✉️ 联系我</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <h3 data-i18n="footer-contact-title">联系方式</h3>
+  <p>Email: contact@example.com</p>
+  <div class="subscribe">
+    <span data-i18n="footer-subscribe">订阅电子报</span>:
+    <input type="email" placeholder="your@email.com">
+    <button class="btn" data-i18n="btn-subscribe">订阅</button>
+  </div>
+</footer>
+
+<script>
+    function openImg(src) {
+      document.getElementById('modalImg').src = src;
+      document.getElementById('imgModal').classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeImg() {
+      document.getElementById('imgModal').classList.remove('show');
+      document.body.style.overflow = 'auto';
+    }
+
+    const i18n = {
+      zh: {
+        "site-title": "砚舟博客", "nav-home": "首页", "nav-about": "关于我们",
+        "nav-contact": "联系我们", "user-name": "砚舟", "site-intro": "美好的时光/美丽的风景",
+        "section-iguazu": "伊瓜苏大瀑布", "iguazu-p1": "伊瓜苏大瀑布是世界上最宽的瀑布群，横跨阿根廷与巴西，世界著名自然奇观。",
+        "iguazu-detail": "宽近2.7公里、275道瀑布，魔鬼之咽气势磅礴，列入世界自然遗产与世界新七大自然奇观。",
+        "pic1-desc": "彩虹横跨水雾雨林", "pic2-desc": "鸟瞰大河入深谷",
+        "pic3-desc": "魔鬼之咽水汽翻腾", "pic4-desc": "阳光穿透现彩虹",
+        "section-location": "位置与搜索", "btn-iguazu": "🔍 瀑布详情", "btn-map": "🗺 地图搜索",
+        "section-recommend": "推荐链接", "link-articles": "📝 文章合集", "link-learn": "💻 学习资源",
+        "link-email": "✉️ 联系我", "footer-contact-title": "联系方式", "footer-subscribe": "订阅电子报", "btn-subscribe": "订阅"
+      },
+      en: {
+        "site-title": "Yanzhou's Blog", "nav-home": "Home", "nav-about": "About",
+        "nav-contact": "Contact", "user-name": "Yanzhou", "site-intro": "Beautiful moments & scenery",
+        "section-iguazu": "Iguazu Falls", "iguazu-p1": "World's widest falls between Argentina and Brazil, famous natural wonder.",
+        "iguazu-detail": "2.7km wide with 275 cascades; Devil's Throat is magnificent, World Heritage & Natural Wonder.",
+        "pic1-desc": "Rainbow over mist & forest", "pic2-desc": "Aerial river into valley",
+        "pic3-desc": "Devil's Throat roaring mist", "pic4-desc": "Sunlight brings rainbow",
+        "section-location": "Location & Search", "btn-iguazu": "🔍 Details", "btn-map": "🗺 Map Search",
+        "section-recommend": "Links", "link-articles": "📝 Articles", "link-learn": "💻 Resources",
+        "link-email": "✉️ Contact", "footer-contact-title": "Contact Info", "footer-subscribe": "Newsletter", "btn-subscribe": "Subscribe"
+      },
+      es: {
+        "site-title": "Blog de Yanzhou", "nav-home": "Inicio", "nav-about": "Sobre mí",
+        "nav-contact": "Contacto", "user-name": "Yanzhou", "site-intro": "Momentos y paisajes hermosos",
+        "section-iguazu": "Cataratas del Iguazú", "iguazu-p1": "Las más anchas del mundo entre Argentina y Brasil, maravilla natural.",
+        "iguazu-detail": "2,7km, 275 saltos; Garganta del Diablo impresionante, Patrimonio de la Humanidad.",
+        "pic1-desc": "Arcoíris sobre niebla y selva", "pic2-desc": "Vista aérea del río",
+        "pic3-desc": "Garganta del Diablo con bruma", "pic4-desc": "Luz y arcoíris brillante",
+        "section-location": "Ubicación y Búsqueda", "btn-iguazu": "🔍 Detalles", "btn-map": "🗺 Mapa",
+        "section-recommend": "Enlaces", "link-articles": "📝 Artículos", "link-learn": "💻 Recursos",
+        "link-email": "✉️ Escribir", "footer-contact-title": "Contacto", "footer-subscribe": "Boletín", "btn-subscribe": "Suscribirse"
+      }
+    };
+
+    function changeLang(lang) {
+      document.documentElement.lang = lang;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if(i18n[lang] && i18n[lang][key]) el.textContent = i18n[lang][key];
+        if(el.tagName==='TITLE') document.title = i18n[lang][key];
+      });
+    }
+    document.getElementById('langSelector').addEventListener('change', e=>changeLang(e.target.value));
+</script>
+</body>
+</html>
